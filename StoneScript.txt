@@ -1,0 +1,57 @@
+// 意念之石是一件强大的圣遗物,以至于经常会在妄图使用它的人们手中失控.
+// 启动后,它持续性地执行给予它的指令.
+// 指令必须使用石之脚本来编写.
+// 你可以在 StoneStoryRPG.com/stonescript 找到相关指南.
+// ——贤者贝赛拉
+
+import Cosmetics/PetBoo
+//import Cosmetics/Hats/skully
+
+draw.Box(1, 6, 15, 5, #aaaaaa, 1)
+>`2,7,name: @foe.name@
+>`2,8,dist: @foe.distance@
+>`2,9,state:@foe.state@
+
+? loc = Boiling Mine
+    var jump_back_time = -1
+    brew wood + bronze
+    ? foe.name = 青铜守卫
+        ? foe.state = 1
+            equipL 星之石
+            equipR 衔尾蛇之石
+        :? foe.state = 32 & jump_back_time < 0
+            jump_back_time = time + 30
+        :? foe.state = 32 & jump_back_time > 0 & time >= jump_back_time
+            equip 意念之石
+        :? foe.state = 33
+            jump_back_time = -1
+            ? foe.armor > 0
+                equip 重锤
+                ? foe.distance = 8 & item.GetCooldown("hammer") <= 0
+                    activate R
+                ? foe.distance = 8 & item.GetCooldown("hammer") > 0
+                    activate potion
+            :
+                equip 连弩
+                // activate potion
+        :
+            equip 连弩
+    :? foe.distance > 23 | foe.distance = -1
+        equipL 星之石
+        equipR 衔尾蛇之石
+    :
+        equip 连弩
+
+? loc = Mushroom Forest
+    brew tar
+    ? hp < 10
+        activate potion
+    ? foe.distance > 23 | foe.distance = -1
+        equipL 星之石
+        equipR 衔尾蛇之石
+    :? foe.armor > 0 & foe.distance <= 8
+        equip 重锤
+        ? item.GetCooldown("hammer") <= 0
+            activate R
+    :
+        equip 连弩
