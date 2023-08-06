@@ -6,11 +6,35 @@
 
 import Cosmetics/PetBoo
 //import Cosmetics/Hats/skully
+import fishing
 
-draw.Box(1, 6, 15, 5, #aaaaaa, 1)
->`2,7,name: @foe.name@
->`2,8,dist: @foe.distance@
->`2,9,state:@foe.state@
+? !loc.isQuest
+    ? !(foe.state = -1)
+        draw.Box(1, 6, 15, 5, #888888, 1)
+        >`2,7,name: @foe.name@
+        >`2,8,dist: @foe.distance@
+        >`2,9,state:@foe.state@
+
+    draw.Box(1, 18, 15, 6, #888888, 1)
+    >`2,19,buff:   @buffs.string@
+    >`2,20,debuff: @debuffs.string@
+    >`2,21,left:   @item.left@
+    >`2,22,right:  @item.right@
+
+? loc = Temple
+    brew wood + tar
+    ? foe.distance > 23 | foe.distance = -1
+        equipL 星之石
+        equipR 衔尾蛇之石
+    :? foe.name = 吞炬蛇神那伽王
+        equip 连弩
+        ? debuffs.count >= 6
+            activate potion
+    :? debuffs.count > 1
+        equipL 寒冰魔杖
+        equipR 寒冰盾牌
+    :
+        equip 连弩
 
 ? loc = Boiling Mine
     var jump_back_time = -1
@@ -53,5 +77,15 @@ draw.Box(1, 6, 15, 5, #aaaaaa, 1)
         equip 重锤
         ? item.GetCooldown("hammer") <= 0
             activate R
+    :
+        equip 连弩
+
+? loc = Caves of Fear
+    ? foe.distance > 23 | foe.distance = -1
+        equipL 星之石
+        equipR 衔尾蛇之石
+    :? foe.name = 悬蝠
+        equipL 弩
+        equipR 寒冰盾牌
     :
         equip 连弩
